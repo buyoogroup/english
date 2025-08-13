@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>영어 마스터 - AI 영어 학습 앱</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845045879353171" crossorigin="anonymous"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #6B46C1 0%, #342E81 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #F7F8FA;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+        }
+
+        /* 헤더 */
+        .header {
+            background: linear-gradient(135deg, #6B46C1 0%, #4C3B8F 100%);
+            padding: 20px;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(107, 70, 193, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-btn {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .menu-btn:active {
+            transform: scale(0.95);
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* 레벨 선택 탭 */
+        .level-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .level-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .level-tab {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 20px;
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .level-tab.active {
+            background: white;
+            color: #6B46C1;
+            transform: scale(1.05);
+        }
+
+        /* 통계 카드 */
+        .stats-container {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+        }
+
+        .stat-card:active {
+            transform: scale(0.98);
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6B46C1 0%, #4C3B8F 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        /* 진행률 바 */
+        .progress-section {
+            padding: 0 20px 20px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #E5E8EB;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6B46C1 0%, #4C3B8F 100%);
+            border-radius: 10px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 문제 카드 */
+        .question-section {
+            padding: 0 20px 20px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            position: relative;
+            min-height: 200px;
+        }
+
+        .difficulty-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .review-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #FF6B6B;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            margin-top: 32px;
+        }
+
+        .blank-word {
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #6B46C120 0%, #4C3B8F20 100%);
+            border: 2px dashed #6B46C1;
+            border-radius: 8px;
+            color: #6B46C1;
+            font-weight: 700;
+            margin: 0 4px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .translation {
+            background: #F7F8FA;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 15px;
+            color: #666;
+            border-left: 3px solid #6B46C1;
+            margin-top: 16px;
+        }
+
+        /* 선택지 */
+        .options-container {
+            padding: 0 20px 20px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #E5E8EB;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #6B46C1 0%, #4C3B8F 100%);
+            color: white;
+            border-color: transparent;
+            transform: scale(1.02);
+        }
+
+        .option-btn.correct {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+            animation: correctPulse 0.6s;
+        }
+
+        .option-btn.incorrect {
+            background: #FF5252;
+            color: white;
+            border-color: #FF5252;
+            animation: shake 0.5s;
+        }
+
+        .option-btn.show-correct {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .option-number {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 24px;
+            height: 24px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* 액션 버튼 */
+        .action-buttons {
+            padding: 0 20px 30px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #6B46C1 0%, #4C3B8F 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(107, 70, 193, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: #6B46C1;
+            border: 2px solid #6B46C1;
+        }
+
+        .action-btn.success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.3);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 광고 컨테이너 */
+        .ad-container {
+            padding: 20px;
+            background: white;
+            margin: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .ad-label {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 10px;
+            color: #999;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* 플로팅 메시지 */
+        .floating-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 18px;
+            font-weight: 600;
+            animation: fadeIn 0.3s;
+        }
+
+        .floating-message.success {
+            color: #4CAF50;
+        }
+
+        .floating-message.error {
+            color: #FF5252;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -40%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        /* 하단 네비게이션 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #E5E8EB;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            color: #888;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item.active {
+            color: #6B46C1;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        /* 모달 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: #F7F8FA;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+        }
+
+        /* 반응형 */
+        @media (max-width: 380px) {
+            .question-text {
+                font-size: 18px;
+            }
+            
+            .option-btn {
+                font-size: 14px;
+                padding: 14px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                margin: 20px auto;
+                border-radius: 24px;
+                max-height: calc(100vh - 40px);
+                overflow: hidden;
+            }
+        }
+
+        /* 컨텐츠 패딩 (하단 네비 공간) */
+        .content {
+            padding-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 헤더 -->
+        <div class="header">
+            <div class="header-top">
+                <div class="app-title">
+                    <span>🎯</span>
+                    <span>영어 마스터</span>
+                </div>
+                <button class="menu-btn" onclick="showSettings()">⚙️</button>
+            </div>
+            
+            <div class="level-tabs">
+                <button class="level-tab active" data-level="toeic">TOEIC</button>
+                <button class="level-tab" data-level="toefl">TOEFL</button>
+                <button class="level-tab" data-level="practical">실전회화</button>
+                <button class="level-tab" data-level="news">뉴스영어</button>
+                <button class="level-tab" data-level="smart">🧠 스마트복습</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- 통계 -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-value" id="todayCount">0</div>
+                    <div class="stat-label">오늘 학습</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✨</div>
+                    <div class="stat-value" id="accuracy">0%</div>
+                    <div class="stat-label">정답률</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-label">연속 정답</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-value" id="masteredCount">0</div>
+                    <div class="stat-label">마스터</div>
+                </div>
+            </div>
+
+            <!-- 진행률 -->
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span>학습 진행률</span>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- 광고 영역 1 (인피드) -->
+            <div class="ad-container">
+                <span class="ad-label">AD</span>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-format="fluid"
+                     data-ad-layout-key="-gw-3+1f-3d+2z"
+                     data-ad-client="ca-pub-3845045879353171"
+                     data-ad-slot="9997471959"></ins>
+            </div>
+
+            <!-- 문제 카드 -->
+            <div class="question-section">
+                <div class="question-card">
+                    <div class="difficulty-badge" id="difficultyBadge">초급</div>
+                    <div class="review-badge" id="reviewBadge" style="display: none;">
+                        <span>🔄</span>
+                        <span id="reviewText">복습</span>
+                    </div>
+                    
+                    <div class="question-text" id="questionText">
+                        <!-- 문제가 여기에 표시됩니다 -->
+                    </div>
+                    
+                    <div class="translation" id="translation">
+                        <!-- 번역이 여기에 표시됩니다 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 선택지 -->
+            <div class="options-container">
+                <div class="options-grid" id="optionsGrid">
+                    <!-- 선택지가 동적으로 생성됩니다 -->
+                </div>
+            </div>
+
+            <!-- 액션 버튼 -->
+            <div class="action-buttons">
+                <button class="action-btn primary" id="submitBtn" disabled onclick="checkAnswer()">
+                    정답 확인
+                </button>
+                <button class="action-btn secondary" id="skipBtn" onclick="skipQuestion()">
+                    모르겠어요
+                </button>
+                <button class="action-btn success" id="nextBtn" style="display: none;" onclick="nextQuestion()">
+                    다음 문제 →
+                </button>
+            </div>
+
+            <!-- 광고 영역 2 (디스플레이) -->
+            <div class="ad-container">
+                <span class="ad-label">AD</span>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-3845045879353171"
+                     data-ad-slot="9011693349"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+        </div>
+
+        <!-- 하단 네비게이션 -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="showTab('home')">
+                <div class="nav-icon">🏠</div>
+                <span>홈</span>
+            </div>
+            <div class="nav-item" onclick="showTab('stats')">
+                <div class="nav-icon">📊</div>
+                <span>통계</span>
+            </div>
+            <div class="nav-item" onclick="showTab('review')">
+                <div class="nav-icon">📝</div>
+                <span>복습</span>
+            </div>
+            <div class="nav-item" onclick="showTab('profile')">
+                <div class="nav-icon">👤</div>
+                <span>프로필</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 설정 모달 -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-header">설정</div>
+            <p>음향 효과, 알림 설정 등이 여기에 표시됩니다.</p>
+        </div>
+    </div>
+
+    <script>
+        // 문제 데이터베이스
+        const questionDB = {
+            toeic: [
+                { en: "The meeting has been ___ to next Monday.", blank: "postponed", ko: "회의가 다음 주 월요일로 연기되었습니다.", options: ["postponed", "cancelled", "arranged", "scheduled"], difficulty: 1 },
+                { en: "Please ___ the attached document.", blank: "refer to", ko: "첨부된 문서를 참조해 주세요.", options: ["refer to", "look at", "see to", "check in"], difficulty: 1 },
+                { en: "The company will ___ a new product.", blank: "launch", ko: "회사는 신제품을 출시할 예정입니다.", options: ["launch", "start", "begin", "create"], difficulty: 1 },
+                { en: "Employees must ___ the regulations.", blank: "comply with", ko: "직원들은 규정을 준수해야 합니다.", options: ["comply with", "agree to", "follow up", "deal with"], difficulty: 2 },
+                { en: "The deadline has been ___.", blank: "extended", ko: "마감일이 연장되었습니다.", options: ["extended", "shortened", "confirmed", "deleted"], difficulty: 1 }
+            ],
+            toefl: [
+                { en: "The lecture was ___ and insightful.", blank: "comprehensive", ko: "강의는 포괄적이고 통찰력이 있었습니다.", options: ["comprehensive", "boring", "simple", "basic"], difficulty: 2 },
+                { en: "The research ___ new findings.", blank: "revealed", ko: "연구는 새로운 발견을 밝혀냈습니다.", options: ["revealed", "hidden", "covered", "closed"], difficulty: 2 },
+                { en: "Students must ___ their thesis.", blank: "submit", ko: "학생들은 논문을 제출해야 합니다.", options: ["submit", "receive", "reject", "review"], difficulty: 1 },
+                { en: "The experiment ___ the hypothesis.", blank: "validated", ko: "실험은 가설을 검증했습니다.", options: ["validated", "rejected", "ignored", "forgot"], difficulty: 3 },
+                { en: "The theory is ___ accepted.", blank: "widely", ko: "그 이론은 널리 받아들여지고 있습니다.", options: ["widely", "rarely", "never", "sometimes"], difficulty: 2 }
+            ],
+            practical: [
+                { en: "Could you ___ me a favor?", blank: "do", ko: "부탁 좀 들어주실 수 있나요?", options: ["do", "make", "give", "take"], difficulty: 1 },
+                { en: "I'm running ___ of time.", blank: "out", ko: "시간이 부족해요.", options: ["out", "in", "up", "down"], difficulty: 1 },
+                { en: "Let's keep ___ touch.", blank: "in", ko: "연락하고 지내요.", options: ["in", "on", "at", "to"], difficulty: 1 },
+                { en: "It's worth ___ it a try.", blank: "giving", ko: "한번 시도해 볼 가치가 있어요.", options: ["giving", "taking", "making", "doing"], difficulty: 2 },
+                { en: "I'll take you ___ on that.", blank: "up", ko: "그 제안을 받아들이겠습니다.", options: ["up", "down", "in", "out"], difficulty: 2 }
+            ],
+            news: [
+                { en: "The government ___ new measures.", blank: "implemented", ko: "정부는 새로운 조치를 시행했습니다.", options: ["implemented", "destroyed", "abandoned", "postponed"], difficulty: 3 },
+                { en: "Markets ___ dramatically yesterday.", blank: "plummeted", ko: "어제 시장이 급락했습니다.", options: ["plummeted", "soared", "stabilized", "remained"], difficulty: 3 },
+                { en: "Scientists made a ___.", blank: "breakthrough", ko: "과학자들이 획기적인 발견을 했습니다.", options: ["breakthrough", "setback", "mistake", "problem"], difficulty: 3 },
+                { en: "The treaty was ___.", blank: "ratified", ko: "조약이 비준되었습니다.", options: ["ratified", "rejected", "ignored", "delayed"], difficulty: 4 },
+                { en: "Economy shows ___ signs.", blank: "recovery", ko: "경제가 회복 조짐을 보입니다.", options: ["recovery", "collapse", "stagnation", "inflation"], difficulty: 2 }
+            ]
+        };
+
+        // 학습 기록 클래스
+        class LearningSystem {
+            constructor() {
+                this.records = this.loadData();
+                this.currentLevel = 'toeic';
+                this.currentQuestion = null;
+                this.selectedOption = null;
+                this.isAnswered = false;
+                this.sessionStats = {
+                    todayCount: 0,
+                    correctCount: 0,
+                    totalCount: 0,
+                    streak: 0
+                };
+            }
+
+            loadData() {
+                const saved = localStorage.getItem('englishMasterData');
+                return saved ? JSON.parse(saved) : {};
+            }
+
+            saveData() {
+                localStorage.setItem('englishMasterData', JSON.stringify(this.records));
+            }
+
+            getQuestionId(question) {
+                return `${question.en}_${question.blank}`;
+            }
+
+            recordAnswer(question, isCorrect) {
+                const id = this.getQuestionId(question);
+                
+                if (!this.records[id]) {
+                    this.records[id] = {
+                        question: question,
+                        level: this.currentLevel,
+                        correctCount: 0,
+                        incorrectCount: 0,
+                        lastSeen: Date.now(),
+                        reviewCount: 0,
+                        mastered: false
+                    };
+                }
+
+                const record = this.records[id];
+                record.lastSeen = Date.now();
+                
+                if (isCorrect) {
+                    record.correctCount++;
+                    record.reviewCount = Math.max(0, record.reviewCount - 1);
+                    if (record.correctCount >= 5 && record.incorrectCount === 0) {
+                        record.mastered = true;
+                    }
+                } else {
+                    record.incorrectCount++;
+                    record.reviewCount += 2;
+                    record.mastered = false;
+                }
+
+                this.saveData();
+            }
+
+            getSmartQuestion() {
+                const needReview = Object.values(this.records)
+                    .filter(r => !r.mastered && r.reviewCount > 0)
+                    .sort((a, b) => b.reviewCount - a.reviewCount);
+                
+                if (needReview.length > 0 && Math.random() < 0.6) {
+                    return needReview[0].question;
+                }
+                return null;
+            }
+
+            getMasteredCount() {
+                return Object.values(this.records).filter(r => r.mastered).length;
+            }
+
+            getTotalLearned() {
+                return Object.keys(this.records).length;
+            }
+        }
+
+        // 앱 초기화
+        const app = new LearningSystem();
+
+        // UI 업데이트
+        function updateStats() {
+            const stats = app.sessionStats;
+            document.getElementById('todayCount').textContent = stats.todayCount;
+            document.getElementById('accuracy').textContent = stats.totalCount > 0 
+                ? Math.round((stats.correctCount / stats.totalCount) * 100) + '%' 
+                : '0%';
+            document.getElementById('streak').textContent = stats.streak;
+            document.getElementById('masteredCount').textContent = app.getMasteredCount();
+            
+            const progress = app.getTotalLearned() > 0 
+                ? Math.round((app.getMasteredCount() / app.getTotalLearned()) * 100)
+                : 0;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '%';
+        }
+
+        // 문제 표시
+        function showQuestion() {
+            app.isAnswered = false;
+            app.selectedOption = null;
+            
+            // 문제 선택
+            if (app.currentLevel === 'smart') {
+                const smartQ = app.getSmartQuestion();
+                app.currentQuestion = smartQ || getRandomQuestion();
+            } else {
+                app.currentQuestion = getRandomQuestion();
+            }
+            
+            // 난이도 표시
+            const difficultyText = ['초급', '중급', '고급', '최고급'];
+            const difficulty = app.currentQuestion.difficulty || 1;
+            document.getElementById('difficultyBadge').textContent = difficultyText[difficulty - 1];
+            
+            // 복습 표시
+            const id = app.getQuestionId(app.currentQuestion);
+            const record = app.records[id];
+            if (record && record.reviewCount > 0) {
+                document.getElementById('reviewBadge').style.display = 'flex';
+                document.getElementById('reviewText').textContent = `복습 ${record.reviewCount}회`;
+            } else {
+                document.getElementById('reviewBadge').style.display = 'none';
+            }
+            
+            // 문제 텍스트
+            const blank = '<span class="blank-word">___</span>';
+            const questionHtml = app.currentQuestion.en.replace(app.currentQuestion.blank, blank);
+            document.getElementById('questionText').innerHTML = questionHtml;
+            document.getElementById('translation').textContent = app.currentQuestion.ko;
+            
+            // 선택지 생성
+            createOptions();
+            
+            // 버튼 상태
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').style.display = 'flex';
+            document.getElementById('skipBtn').style.display = 'flex';
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function getRandomQuestion() {
+            const questions = questionDB[app.currentLevel] || questionDB.toeic;
+            return questions[Math.floor(Math.random() * questions.length)];
+        }
+
+        function createOptions() {
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
+            
+            const shuffled = [...app.currentQuestion.options].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `
+                    <span class="option-number">${index + 1}</span>
+                    ${option}
+                `;
+                btn.dataset.option = option;
+                btn.onclick = () => selectOption(option, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectOption(option, btn) {
+            if (app.isAnswered) return;
+            
+            document.querySelectorAll('.option-btn').forEach(b => {
+                b.classList.remove('selected');
+            });
+            
+            btn.classList.add('selected');
+            app.selectedOption = option;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function checkAnswer() {
+            if (!app.selectedOption || app.isAnswered) return;
+            
+            app.isAnswered = true;
+            const isCorrect = app.selectedOption === app.currentQuestion.blank;
+            
+            app.sessionStats.totalCount++;
+            app.sessionStats.todayCount++;
+            
+            // 버튼 표시
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                if (btn.dataset.option === app.selectedOption) {
+                    btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+                if (btn.dataset.option === app.currentQuestion.blank && !isCorrect) {
+                    btn.classList.add('show-correct');
+                }
+            });
+            
+            if (isCorrect) {
+                app.sessionStats.correctCount++;
+                app.sessionStats.streak++;
+                showMessage('정답입니다! 🎉', 'success');
+            } else {
+                app.sessionStats.streak = 0;
+                showMessage(`정답: ${app.currentQuestion.blank}`, 'error');
+            }
+            
+            app.recordAnswer(app.currentQuestion, isCorrect);
+            updateStats();
+            
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('skipBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'flex';
+        }
+
+        function skipQuestion() {
+            if (app.isAnswered) return;
+            
+            app.isAnswered = true;
+            app.sessionStats.totalCount++;
+            app.sessionStats.todayCount++;
+            app.sessionStats.streak = 0;
+            
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                if (btn.dataset.option === app.currentQuestion.blank) {
+                    btn.classList.add('show-correct');
+                }
+            });
+            
+            showMessage(`정답: ${app.currentQuestion.blank}`, 'error');
+            app.recordAnswer(app.currentQuestion, false);
+            updateStats();
+            
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('skipBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'flex';
+        }
+
+        function nextQuestion() {
+            showQuestion();
+        }
+
+        function showMessage(text, type) {
+            const existing = document.querySelector('.floating-message');
+            if (existing) existing.remove();
+            
+            const msg = document.createElement('div');
+            msg.className = `floating-message ${type}`;
+            msg.textContent = text;
+            document.body.appendChild(msg);
+            
+            setTimeout(() => msg.remove(), 2000);
+        }
+
+        // 레벨 탭
+        document.querySelectorAll('.level-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelector('.level-tab.active').classList.remove('active');
+                this.classList.add('active');
+                app.currentLevel = this.dataset.level;
+                showQuestion();
+            });
+        });
+
+        // 네비게이션
+        function showTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            // 탭 전환 로직
+        }
+
+        function showSettings() {
+            document.getElementById('settingsModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        // 키보드 단축키
+        document.addEventListener('keypress', function(e) {
+            if (e.key >= '1' && e.key <= '4') {
+                const index = parseInt(e.key) - 1;
+                const buttons = document.querySelectorAll('.option-btn');
+                if (buttons[index] && !app.isAnswered) {
+                    buttons[index].click();
+                }
+            }
+        });
+
+        // AdSense 초기화
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({});
+
+        // 앱 시작
+        updateStats();
+        showQuestion();
+    </script>
+</body>
+</html>
